@@ -4,7 +4,14 @@ public class Account {
 	private String type;
 	private String name;
 	private double total;
+	private User owner;
 	
+	public User getOwner() {
+		return owner;
+	}
+	public void setOwner(User owner) {
+		this.owner = owner;
+	}
 	public String getType() {
 		return type;
 	}
