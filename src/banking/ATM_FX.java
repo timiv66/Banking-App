@@ -107,7 +107,7 @@ public class ATM_FX extends Application{
 					user.setPin(Integer.parseInt(pinTxtF.getText()));
 					user.setUsername(usrTxtF.getText());
 					user.setPassword(passTxtF.getText());
-					t.setRoot(ATM(t));
+					t.setRoot(login(t));
 				}else {
 					errorMsg.setVisible(true);
 				}
@@ -122,9 +122,14 @@ public class ATM_FX extends Application{
 		return setupPane;
 	}
 	
-	public Pane ATM(Scene t) {
+	public Pane login(Scene t) {
+		//Login Label
+		Label logLbl = new Label("Please Login");
+		logLbl.setFont(titleFont);
+		
 		
 		Pane loginPane = new Pane();
+		loginPane.getChildren().addAll(logLbl);
 		return loginPane;
 	}
 
