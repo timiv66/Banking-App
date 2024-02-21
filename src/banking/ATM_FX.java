@@ -20,6 +20,7 @@ import javafx.stage.Stage;
 public class ATM_FX extends Application{
 	Font titleFont = new Font("Stencil",25);
 	Font txtFont = new Font("Lucida Bright",17);
+	Font errorFont = new Font("Times New Roman",11);
 	User user = new User();
 	
 	
@@ -30,7 +31,7 @@ public class ATM_FX extends Application{
 	@Override
 	public void start(Stage mainStage) throws Exception {
 		Pane p1 = new Pane();
-		Scene t = new Scene(p1,350,140);
+		Scene t = new Scene(p1,350,240);
 		t.setFill(Color.BLUE);
 		t.setRoot(setup(t));
 		mainStage.setScene(t);
@@ -66,22 +67,46 @@ public class ATM_FX extends Application{
 		pinTxtF.setTranslateY(63);
 		pinTxtF.setPrefWidth(50);
 		
+		//username and password
+		Label usrNameLbl = new Label("Set your username:");
+		usrNameLbl.setFont(txtFont);
+		usrNameLbl.setTranslateX(3);
+		usrNameLbl.setTranslateY(97);
+		
+		TextField usrTxtF = new TextField();
+		usrTxtF.setTranslateX(165);
+		usrTxtF.setTranslateY(95);
+		
+		Label passWrdLbl = new Label("Set your password:");
+		passWrdLbl.setFont(txtFont);
+		passWrdLbl.setTranslateX(3);
+		passWrdLbl.setTranslateY(128);
+		
+		TextField passTxtF = new TextField();
+		passTxtF.setTranslateX(165);
+		passTxtF.setTranslateY(126);
+		
 		//ERROR MESSAGE
-		Text errorMsg = new Text("Please enter a vaild name and pin number");
+		Text errorMsg = new Text("Please enter a vaild name and pin number "
+				+ "\nUsername must have 6 characters and Password must have 8 characters \nPassword must include speacial character:!@#$%&*");
 		errorMsg.setX(3);
-		errorMsg.setY(110);
+		errorMsg.setY(170);
+		errorMsg.setFont(errorFont);
 		errorMsg.setVisible(false);
 		
 		Button nxtBtn = new Button("Next");
 		nxtBtn.setTranslateX(305);
-		nxtBtn.setTranslateY(110);
+		nxtBtn.setTranslateY(210);
 		
 		nxtBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if(nameTxtF.getText().matches("[a-zA-Z\s]*") && pinTxtF.getText().matches("[0-9]{4}")) {
+				if(nameTxtF.getText().matches("[a-zA-Z\s]*") && pinTxtF.getText().matches("[0-9]{4}")
+						&& usrTxtF.getText().matches("[\\w]{6,}") && passTxtF.getText().matches("[\\w]{7,}"+"[!@#$%&*]+")) {
 					user.setName(nameTxtF.getText());
 					user.setPin(Integer.parseInt(pinTxtF.getText()));
+					user.setUsername(usrTxtF.getText());
+					user.setPassword(passTxtF.getText());
 					t.setRoot(ATM(t));
 				}else {
 					errorMsg.setVisible(true);
@@ -93,7 +118,7 @@ public class ATM_FX extends Application{
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		setupPane.setBackground(background);
-		setupPane.getChildren().addAll(title,nameLbl,nameTxtF,pinLabel,pinTxtF,errorMsg,nxtBtn);
+		setupPane.getChildren().addAll(title,nameLbl,nameTxtF,pinLabel,pinTxtF,usrNameLbl,usrTxtF,passWrdLbl,passTxtF,errorMsg,nxtBtn);
 		return setupPane;
 	}
 	
