@@ -1,10 +1,11 @@
 package banking;
+import java.util.Random;
 
 public class Account {
-	private String type;
-	private String name;
-	private double balance;
-	private double accountNum;
+	private String type = "Checking";
+	private String name = "Account #1";
+	private double balance = 0;
+	private String accountNum = generateRandomNumberString();
 	private User owner;
 	
 	public String getType() {
@@ -25,10 +26,10 @@ public class Account {
 	public void setBalance(double balance) {
 		this.balance = balance;
 	}
-	public double getAccountNum() {
+	public String getAccountNum() {
 		return accountNum;
 	}
-	public void setAccountNum(double accountNum) {
+	public void setAccountNum(String accountNum) {
 		this.accountNum = accountNum;
 	}
 	public User getOwner() {
@@ -37,15 +38,21 @@ public class Account {
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
+	public static String generateRandomNumberString() {
+       
+        int length = 10;
+        StringBuilder randomStringBuilder = new StringBuilder(length);
+        Random rand = new Random();
+
+        for (int i = 0; i < length; i++) {
+            int randomNumber = rand.nextInt(10); 
+            randomStringBuilder.append(randomNumber);
+        }
+        return randomStringBuilder.toString();
+    }
+
 	Account(){
 		
-	}
-	Account(String type, String name, double balance, double accountNum, User owner) {
-		this.type = type;
-		this.name = name;
-		this.balance = balance;
-		this.accountNum = accountNum;
-		this.owner = owner;
 	}
 	
 	

@@ -3,10 +3,10 @@ import java.util.regex.*;
 import java.util.Scanner;
 
 public class User {
-	private String name;
-	private int pin;
-	private String username;
-	private String password;
+	private String name = "User";
+	private int pin = 0000;
+	private String username = "username";
+	private String password = "password";
 	private Account account;
 	
 	public String getName() {
@@ -43,16 +43,5 @@ public class User {
 	User(){
 		
 	}
-	
-	User(String name, int pin, String username, String password, Account account) {
-		this.name = name;
-		this.pin = pin;
-		this.username = username;
-		this.password = password;
-		this.account = account;
-	}
-	
-	
-	
 	
 }

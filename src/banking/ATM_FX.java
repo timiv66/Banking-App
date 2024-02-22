@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -13,16 +14,19 @@ import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.scene.paint.Paint;
 
 public class ATM_FX extends Application{
 	Font titleFont = new Font("Stencil",25);
 	Font txtFont = new Font("Lucida Bright",17);
 	Font errorFont = new Font("Times New Roman",11);
+	Font btnFont = new Font("Elephant",18);
 	Account account = new Account();
-	User user = new User("User",0000,"username","password",account);
+	User user = new User();
 	
 	
 	public static void main(String[] args) {
@@ -103,9 +107,7 @@ public class ATM_FX extends Application{
 			public void handle(ActionEvent arg0) {
 				t.setRoot(setup(t));
 			}
-			
 		});
-		
 		
 		Pane loginPane = new Pane();
 		loginPane.getChildren().addAll(logLbl,usrlogLbl,usrlogTxtF,passlogLbl,passlogTxtF,errorMsg,loginBtn,signUpBtn);
@@ -192,23 +194,77 @@ public class ATM_FX extends Application{
 			}
 		});
 		
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(210);
+		
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(login(t));
+			}
+			
+		});
+		
 		Pane setupPane = new Pane();
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		setupPane.setBackground(background);
-		setupPane.getChildren().addAll(title,nameLbl,nameTxtF,pinLabel,pinTxtF,usrNameLbl,usrTxtF,passWrdLbl,passTxtF,errorMsg,nxtBtn);
+		setupPane.getChildren().addAll(title,nameLbl,nameTxtF,pinLabel,pinTxtF,usrNameLbl,usrTxtF,passWrdLbl,passTxtF,errorMsg,nxtBtn,backBtn);
 		return setupPane;
 	}
 	
-	
 	public Pane ATM(Scene t) {
+		t.getWindow().setHeight(400);
+		
 		//Welcome label
 		Label welcLbl = new Label("Welcome, " + user.getName());
 		welcLbl.setFont(titleFont);
 		welcLbl.setTranslateX(3);
 		
+		//Transaction
+		Label transLbl = new Label("Select your transaction:");
+		transLbl.setFont(txtFont);
+		transLbl.setTranslateX(3);
+		transLbl.setTranslateY(39);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		//Withdraw option
+		Button withBtn = new Button("Withdraw");
+		withBtn.setTranslateX(205);
+		withBtn.setTranslateY(35);
+		withBtn.setPrefSize(130, 30);
+		withBtn.setFont(btnFont);
+		withBtn.setAlignment(Pos.CENTER_LEFT);
+		
+		//Deposit option
+		Button depBtn = new Button("Deposit");
+		depBtn.setTranslateX(205);
+		depBtn.setTranslateY(76);
+		depBtn.setPrefSize(130, 30);
+		depBtn.setFont(btnFont);
+		depBtn.setAlignment(Pos.CENTER_LEFT);
+		
+		//Check Balance option
+		Button chkbalBtn = new Button("Balance");
+		chkbalBtn.setTranslateX(205);
+		chkbalBtn.setTranslateY(117);
+		chkbalBtn.setPrefSize(130, 30);
+		chkbalBtn.setFont(btnFont);
+		chkbalBtn.setAlignment(Pos.CENTER_LEFT);
+		
+		
 		Pane atmPane = new Pane();
-		atmPane.getChildren().addAll(welcLbl);
+		atmPane.getChildren().addAll(welcLbl,transLbl,line,withBtn,depBtn,chkbalBtn);
 		return atmPane;
 	}
 
