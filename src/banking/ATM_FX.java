@@ -123,14 +123,66 @@ public class ATM_FX extends Application{
 	}
 	
 	public Pane login(Scene t) {
+		t.getWindow().setHeight(185);
 		//Login Label
 		Label logLbl = new Label("Please Login");
 		logLbl.setFont(titleFont);
+		logLbl.setTranslateX(3);
 		
+		//Enter username and password
+		Label usrlogLbl = new Label("Enter username:");
+		usrlogLbl.setFont(txtFont);
+		usrlogLbl.setTranslateX(3);
+		usrlogLbl.setTranslateY(33);
+		
+		TextField usrlogTxtF = new TextField();
+		usrlogTxtF.setTranslateX(140);
+		usrlogTxtF.setTranslateY(32);
+		
+		Label passlogLbl = new Label("Enter password:");
+		passlogLbl.setFont(txtFont);
+		passlogLbl.setTranslateX(3);
+		passlogLbl.setTranslateY(66);
+		
+		TextField passlogTxtF = new TextField();
+		passlogTxtF.setTranslateX(140);
+		passlogTxtF.setTranslateY(64);
+		
+		//error message
+		Text errorMsg = new Text("Incorrect username or password");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(3);
+		errorMsg.setY(105);
+		errorMsg.setVisible(false);
+		
+		//next button
+		Button nxtBtn = new Button("Next");
+		nxtBtn.setTranslateX(305);
+		nxtBtn.setTranslateY(120);
+		
+		nxtBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String inputUsrName = usrlogTxtF.getText();
+				String inputPassWrd = passlogTxtF.getText();
+				
+				if (user.getUsername().matches(inputUsrName) && user.getPassword().matches(inputPassWrd)) {
+					t.setRoot(ATM(t));
+				}else {
+					errorMsg.setVisible(true);
+				}
+			}
+		});
 		
 		Pane loginPane = new Pane();
-		loginPane.getChildren().addAll(logLbl);
+		loginPane.getChildren().addAll(logLbl,usrlogLbl,usrlogTxtF,passlogLbl,passlogTxtF,errorMsg,nxtBtn);
 		return loginPane;
+	}
+	
+	public Pane ATM(Scene t) {
+		
+		Pane atmPane = new Pane();
+		return atmPane;
 	}
 
 }
