@@ -43,8 +43,8 @@ public class User {
 	User(){
 		
 	}
-	public User(String name, int pin, String username, String password, Account account) {
-		super();
+	
+	User(String name, int pin, String username, String password, Account account) {
 		this.name = name;
 		this.pin = pin;
 		this.username = username;

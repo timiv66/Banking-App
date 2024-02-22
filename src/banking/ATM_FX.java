@@ -21,7 +21,8 @@ public class ATM_FX extends Application{
 	Font titleFont = new Font("Stencil",25);
 	Font txtFont = new Font("Lucida Bright",17);
 	Font errorFont = new Font("Times New Roman",11);
-	User user = new User();
+	Account account = new Account();
+	User user = new User("User",0000,"username","password",account);
 	
 	
 	public static void main(String[] args) {
@@ -31,15 +32,92 @@ public class ATM_FX extends Application{
 	@Override
 	public void start(Stage mainStage) throws Exception {
 		Pane p1 = new Pane();
-		Scene t = new Scene(p1,350,240);
+		Scene t = new Scene(p1,350,150);
 		t.setFill(Color.BLUE);
-		t.setRoot(setup(t));
+		t.setRoot(login(t));
 		mainStage.setScene(t);
 		mainStage.show();
 		mainStage.setTitle("ATM");
 	}
 	
+	public Pane login(Scene t) {
+		
+		
+		//Login Label
+		Label logLbl = new Label("Please Login");
+		logLbl.setFont(titleFont);
+		logLbl.setTranslateX(3);
+		
+		//Enter username and password
+		Label usrlogLbl = new Label("Enter username:");
+		usrlogLbl.setFont(txtFont);
+		usrlogLbl.setTranslateX(3);
+		usrlogLbl.setTranslateY(33);
+		
+		TextField usrlogTxtF = new TextField();
+		usrlogTxtF.setTranslateX(140);
+		usrlogTxtF.setTranslateY(32);
+		
+		Label passlogLbl = new Label("Enter password:");
+		passlogLbl.setFont(txtFont);
+		passlogLbl.setTranslateX(3);
+		passlogLbl.setTranslateY(66);
+		
+		TextField passlogTxtF = new TextField();
+		passlogTxtF.setTranslateX(140);
+		passlogTxtF.setTranslateY(64);
+		
+		//error message
+		Text errorMsg = new Text("Incorrect username or password");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(3);
+		errorMsg.setY(105);
+		errorMsg.setVisible(false);
+		
+		//next button
+		Button loginBtn = new Button("Login");
+		loginBtn.setTranslateX(180);
+		loginBtn.setTranslateY(120);
+		
+		loginBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				String inputUsrName = usrlogTxtF.getText();
+				String inputPassWrd = passlogTxtF.getText();
+				
+				if (user.getUsername().matches(inputUsrName) && user.getPassword().matches(inputPassWrd)) {
+					t.setRoot(ATM(t));
+				}else {
+					errorMsg.setVisible(true);
+				}
+			}
+		});
+		
+		//Sign Up
+		Button signUpBtn = new Button("Sign Up");
+		signUpBtn.setTranslateX(110);
+		signUpBtn.setTranslateY(120);
+		
+		signUpBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(setup(t));
+			}
+			
+		});
+		
+		
+		Pane loginPane = new Pane();
+		loginPane.getChildren().addAll(logLbl,usrlogLbl,usrlogTxtF,passlogLbl,passlogTxtF,errorMsg,loginBtn,signUpBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		loginPane.setBackground(background);
+		return loginPane;
+	}
+	
+	
 	public Pane setup(Scene t) {
+		t.getWindow().setHeight(280);
 		
 		//Title
 		Label title = new Label("Create an Account");
@@ -122,66 +200,15 @@ public class ATM_FX extends Application{
 		return setupPane;
 	}
 	
-	public Pane login(Scene t) {
-		t.getWindow().setHeight(185);
-		//Login Label
-		Label logLbl = new Label("Please Login");
-		logLbl.setFont(titleFont);
-		logLbl.setTranslateX(3);
-		
-		//Enter username and password
-		Label usrlogLbl = new Label("Enter username:");
-		usrlogLbl.setFont(txtFont);
-		usrlogLbl.setTranslateX(3);
-		usrlogLbl.setTranslateY(33);
-		
-		TextField usrlogTxtF = new TextField();
-		usrlogTxtF.setTranslateX(140);
-		usrlogTxtF.setTranslateY(32);
-		
-		Label passlogLbl = new Label("Enter password:");
-		passlogLbl.setFont(txtFont);
-		passlogLbl.setTranslateX(3);
-		passlogLbl.setTranslateY(66);
-		
-		TextField passlogTxtF = new TextField();
-		passlogTxtF.setTranslateX(140);
-		passlogTxtF.setTranslateY(64);
-		
-		//error message
-		Text errorMsg = new Text("Incorrect username or password");
-		errorMsg.setFont(errorFont);
-		errorMsg.setX(3);
-		errorMsg.setY(105);
-		errorMsg.setVisible(false);
-		
-		//next button
-		Button nxtBtn = new Button("Next");
-		nxtBtn.setTranslateX(305);
-		nxtBtn.setTranslateY(120);
-		
-		nxtBtn.setOnAction(new EventHandler <ActionEvent>() {
-			@Override
-			public void handle(ActionEvent arg0) {
-				String inputUsrName = usrlogTxtF.getText();
-				String inputPassWrd = passlogTxtF.getText();
-				
-				if (user.getUsername().matches(inputUsrName) && user.getPassword().matches(inputPassWrd)) {
-					t.setRoot(ATM(t));
-				}else {
-					errorMsg.setVisible(true);
-				}
-			}
-		});
-		
-		Pane loginPane = new Pane();
-		loginPane.getChildren().addAll(logLbl,usrlogLbl,usrlogTxtF,passlogLbl,passlogTxtF,errorMsg,nxtBtn);
-		return loginPane;
-	}
 	
 	public Pane ATM(Scene t) {
+		//Welcome label
+		Label welcLbl = new Label("Welcome, " + user.getName());
+		welcLbl.setFont(titleFont);
+		welcLbl.setTranslateX(3);
 		
 		Pane atmPane = new Pane();
+		atmPane.getChildren().addAll(welcLbl);
 		return atmPane;
 	}
 
