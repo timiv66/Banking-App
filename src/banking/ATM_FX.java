@@ -1,5 +1,7 @@
 package banking;
 
+import java.util.function.UnaryOperator;
+
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -9,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
@@ -20,6 +23,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.util.converter.IntegerStringConverter;
 import javafx.scene.paint.Paint;
 
 public class ATM_FX extends Application{
@@ -29,7 +33,7 @@ public class ATM_FX extends Application{
 	Font btnFont = new Font("Elephant",18);
 	DropShadow shadow = new DropShadow();
 	Account account = new Account();
-	User user = new User();
+	User user = new User(account);
 	
 	
 	public static void main(String[] args) {
@@ -387,6 +391,19 @@ public class ATM_FX extends Application{
 	public Pane withdraw(Scene t) {
 		t.getWindow().setHeight(200);
 		
+		//only numbers accepted in txt fields
+		UnaryOperator<TextFormatter.Change> filter = change -> {
+			String text = change.getText();
+			// Check if the new text is a number or empty
+			if (text.matches("[0-9]*") || text.isEmpty()) {
+				return change;
+			}
+			// If not a number or empty, reject the change
+			return null;
+		};
+		TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
+		TextFormatter<Integer> textFormatter2 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
+		
 		//Withdraw label and text field
 		Label withLbl = new Label("Amount to withdrawl:$");
 		withLbl.setTranslateX(2);
@@ -406,17 +423,25 @@ public class ATM_FX extends Application{
 		TextField pinTxtF = new TextField();
 		pinTxtF.setTranslateX(85);
 		pinTxtF.setTranslateY(35);
+		pinTxtF.setPrefWidth(50);
+		pinTxtF.setTextFormatter(textFormatter1);
 		
 		//error message
 		Text errorMsg = new Text("");
 		errorMsg.setFont(errorFont);
 		errorMsg.setX(2);
 		errorMsg.setY(73);
+		errorMsg.setVisible(false);
 		
 		//enter button
 		Button enterBtn = new Button("Enter");
 		enterBtn.setTranslateX(305);
 		enterBtn.setTranslateY(133);
+		
+		Text finalTxt = new Text("");
+		finalTxt.setX(3);
+		finalTxt.setY(100);
+		finalTxt.setVisible(false);
 		
 		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
@@ -430,6 +455,29 @@ public class ATM_FX extends Application{
 	        	  enterBtn.setEffect(null);
 	          }
 	        });
+		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				int inputPin = Integer.parseInt(pinTxtF.getText());
+				account.setWithAmt(Double.parseDouble(withTxtF.getText()));
+				if(inputPin != user.getPin()) {
+					errorMsg.setText("Invalid PIN");
+					errorMsg.setVisible(true);
+				}	
+				else {
+					if (account.getWithAmt() > account.getBalance()) {
+						errorMsg.setText("Insufficient Funds! Get your money up");
+						errorMsg.setVisible(true);
+					}
+					else if(account.getWithAmt() <= account.getBalance()) {
+						errorMsg.setVisible(false);
+						account.setBalance(account.getBalance() - account.getWithAmt());
+						finalTxt.setText("You have withdrawn $" +  String.format("%.2f",account.getWithAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
+						finalTxt.setVisible(true);
+					}
+				}
+			}
+		});
 		
 		//back button
 		Button backBtn = new Button("Back");
@@ -457,9 +505,7 @@ public class ATM_FX extends Application{
 			
 		});
 		
-		
-		
-		Pane balancePane = new Pane(withLbl,withTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn);
+		Pane balancePane = new Pane(withLbl,withTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn,finalTxt);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		balancePane.setBackground(background);

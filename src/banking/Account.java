@@ -4,7 +4,9 @@ import java.util.Random;
 public class Account {
 	private String type = "Checking";
 	private String name = "Account #1";
-	private double balance = 0;
+	private double balance = 200;
+	private double withAmt;
+	private double depAmt;
 	private String accountNum = generateRandomNumberString();
 	private User owner;
 	
@@ -25,6 +27,18 @@ public class Account {
 	}
 	public void setBalance(double balance) {
 		this.balance = balance;
+	}
+	public double getWithAmt() {
+		return withAmt;
+	}
+	public void setWithAmt(double withAmt) {
+		this.withAmt = withAmt;
+	}
+	public double getDepAmt() {
+		return depAmt;
+	}
+	public void setDepAmt(double depAmt) {
+		this.depAmt = depAmt;
 	}
 	public String getAccountNum() {
 		return accountNum;

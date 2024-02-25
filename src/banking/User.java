@@ -39,9 +39,10 @@ public class User {
 	public void setAccount(Account account) {
 		this.account = account;
 	}
-	
-	User(){
+	public User(Account account) {
 		
+		this.account = account;
 	}
+	
 	
 }
