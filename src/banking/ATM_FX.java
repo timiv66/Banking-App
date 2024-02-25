@@ -290,6 +290,13 @@ public class ATM_FX extends Application{
 	        	  depBtn.setEffect(null);
 	          }
 	        });
+		depBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(deposit(t));
+			}
+		});
 		
 		//Check Balance option
 		Button chkbalBtn = new Button("Balance");
@@ -500,16 +507,133 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				t.setRoot(ATM(t));
-				
 			}
-			
 		});
 		
-		Pane balancePane = new Pane(withLbl,withTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn,finalTxt);
+		Pane withPane = new Pane(withLbl,withTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn,finalTxt);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
-		balancePane.setBackground(background);
-		return balancePane;
+		withPane.setBackground(background);
+		return withPane;
+	}
+	
+	public Pane deposit(Scene t) {
+		t.getWindow().setHeight(200);
+		
+		//only numbers accepted in txt fields
+		UnaryOperator<TextFormatter.Change> filter = change -> {
+			String text = change.getText();
+			// Check if the new text is a number or empty
+			if (text.matches("[0-9]*") || text.isEmpty()) {
+				return change;
+			}
+			// If not a number or empty, reject the change
+			return null;
+		};
+		TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
+		TextFormatter<Integer> textFormatter2 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
+		
+		//Withdraw label and text field
+		Label depLbl = new Label("Amount to deposit:$");
+		depLbl.setTranslateX(2);
+		depLbl.setTranslateY(5);
+		depLbl.setFont(txtFont);
+		
+		TextField depTxtF = new TextField();
+		depTxtF.setTranslateX(175);
+		depTxtF.setTranslateY(3);
+		depTxtF.setTextFormatter(textFormatter1);
+		
+		//Pin label and text field
+		Label pinLbl = new Label("Enter PIN:");
+		pinLbl.setTranslateX(2);
+		pinLbl.setTranslateY(38);
+		pinLbl.setFont(txtFont);
+		
+		TextField pinTxtF = new TextField();
+		pinTxtF.setTranslateX(85);
+		pinTxtF.setTranslateY(35);
+		pinTxtF.setPrefWidth(50);
+		pinTxtF.setTextFormatter(textFormatter2);
+		
+		//error message
+		Text errorMsg = new Text("");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(2);
+		errorMsg.setY(73);
+		errorMsg.setVisible(false);
+		
+		//enter button
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(305);
+		enterBtn.setTranslateY(133);
+		
+		Text finalTxt = new Text("");
+		finalTxt.setX(3);
+		finalTxt.setY(100);
+		finalTxt.setVisible(false);
+		
+		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  enterBtn.setEffect(shadow);
+	          }
+	        });
+		enterBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  enterBtn.setEffect(null);
+	          }
+	        });
+		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				int inputPin = Integer.parseInt(pinTxtF.getText());
+				account.setDepAmt(Double.parseDouble(depTxtF.getText()));
+				if(inputPin != user.getPin()) {
+					errorMsg.setText("Invalid PIN");
+					errorMsg.setVisible(true);
+				}	
+				else {
+					errorMsg.setVisible(false);
+					account.setBalance(account.getBalance() + account.getDepAmt());
+					finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
+					finalTxt.setVisible(true);
+				}
+			}
+		});
+		
+		//back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(133);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(ATM(t));
+			}
+		});
+		
+		
+		
+		Pane depPane = new Pane(depLbl,depTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn,finalTxt);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		depPane.setBackground(background);
+		return depPane;
 	}
 
 }
