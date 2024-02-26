@@ -24,13 +24,13 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.util.converter.IntegerStringConverter;
-import javafx.scene.paint.Paint;
 
 public class ATM_FX extends Application{
 	Font titleFont = new Font("Stencil",25);
 	Font txtFont = new Font("Lucida Bright",17);
 	Font errorFont = new Font("Times New Roman",11);
 	Font btnFont = new Font("Elephant",18);
+	Font finalFont = new Font("Georgia",12);
 	DropShadow shadow = new DropShadow();
 	Account account = new Account();
 	User user = new User(account);
@@ -409,7 +409,6 @@ public class ATM_FX extends Application{
 			return null;
 		};
 		TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
-		TextFormatter<Integer> textFormatter2 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
 		
 		//Withdraw label and text field
 		Label withLbl = new Label("Amount to withdrawl:$");
@@ -445,10 +444,12 @@ public class ATM_FX extends Application{
 		enterBtn.setTranslateX(305);
 		enterBtn.setTranslateY(133);
 		
+		//Final amount withdrawn and final balance amount
 		Text finalTxt = new Text("");
 		finalTxt.setX(3);
 		finalTxt.setY(100);
 		finalTxt.setVisible(false);
+		finalTxt.setFont(finalFont);
 		
 		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
@@ -465,23 +466,28 @@ public class ATM_FX extends Application{
 		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				int inputPin = Integer.parseInt(pinTxtF.getText());
-				account.setWithAmt(Double.parseDouble(withTxtF.getText()));
-				if(inputPin != user.getPin()) {
-					errorMsg.setText("Invalid PIN");
-					errorMsg.setVisible(true);
-				}	
-				else {
-					if (account.getWithAmt() > account.getBalance()) {
-						errorMsg.setText("Insufficient Funds! Get your money up");
+				try {
+					int inputPin = Integer.parseInt(pinTxtF.getText());
+					account.setWithAmt(Double.parseDouble(withTxtF.getText()));
+					if(inputPin != user.getPin()) {
+						errorMsg.setText("Invalid PIN");
 						errorMsg.setVisible(true);
+					}	
+					else {
+						if (account.getWithAmt() > account.getBalance()) {
+							errorMsg.setText("Insufficient Funds! Get your money up");
+							errorMsg.setVisible(true);
+						}
+						else if(account.getWithAmt() <= account.getBalance()) {
+							errorMsg.setVisible(false);
+							account.setBalance(account.getBalance() - account.getWithAmt());
+							finalTxt.setText("You have withdrawn $" +  String.format("%.2f",account.getWithAmt()) + ".\nYour current balance is $" + String.format("%.2f",account.getBalance()));
+							finalTxt.setVisible(true);
+						}
 					}
-					else if(account.getWithAmt() <= account.getBalance()) {
-						errorMsg.setVisible(false);
-						account.setBalance(account.getBalance() - account.getWithAmt());
-						finalTxt.setText("You have withdrawn $" +  String.format("%.2f",account.getWithAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
-						finalTxt.setVisible(true);
-					}
+				}catch(Exception e) {
+					errorMsg.setText("Please input valid numbers only");
+					errorMsg.setVisible(true);
 				}
 			}
 		});
@@ -531,7 +537,7 @@ public class ATM_FX extends Application{
 			return null;
 		};
 		TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
-		TextFormatter<Integer> textFormatter2 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
+		
 		
 		//Withdraw label and text field
 		Label depLbl = new Label("Amount to deposit:$");
@@ -542,7 +548,6 @@ public class ATM_FX extends Application{
 		TextField depTxtF = new TextField();
 		depTxtF.setTranslateX(175);
 		depTxtF.setTranslateY(3);
-		depTxtF.setTextFormatter(textFormatter1);
 		
 		//Pin label and text field
 		Label pinLbl = new Label("Enter PIN:");
@@ -554,7 +559,7 @@ public class ATM_FX extends Application{
 		pinTxtF.setTranslateX(85);
 		pinTxtF.setTranslateY(35);
 		pinTxtF.setPrefWidth(50);
-		pinTxtF.setTextFormatter(textFormatter2);
+		pinTxtF.setTextFormatter(textFormatter1);
 		
 		//error message
 		Text errorMsg = new Text("");
@@ -568,10 +573,12 @@ public class ATM_FX extends Application{
 		enterBtn.setTranslateX(305);
 		enterBtn.setTranslateY(133);
 		
+		//Final amount withdrawn and final balance amount
 		Text finalTxt = new Text("");
 		finalTxt.setX(3);
 		finalTxt.setY(100);
 		finalTxt.setVisible(false);
+		finalTxt.setFont(finalFont);
 		
 		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
@@ -588,17 +595,22 @@ public class ATM_FX extends Application{
 		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				int inputPin = Integer.parseInt(pinTxtF.getText());
-				account.setDepAmt(Double.parseDouble(depTxtF.getText()));
-				if(inputPin != user.getPin()) {
-					errorMsg.setText("Invalid PIN");
+				try {
+					int inputPin = Integer.parseInt(pinTxtF.getText());
+					account.setDepAmt(Double.parseDouble(depTxtF.getText()));
+					if(inputPin != user.getPin()) {
+						errorMsg.setText("Invalid PIN");
+						errorMsg.setVisible(true);
+					}	
+					else {
+						errorMsg.setVisible(false);
+						account.setBalance(account.getBalance() + account.getDepAmt());
+						finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
+						finalTxt.setVisible(true);
+					}
+				}catch(Exception e) {
+					errorMsg.setText("Please input valid numbers only");
 					errorMsg.setVisible(true);
-				}	
-				else {
-					errorMsg.setVisible(false);
-					account.setBalance(account.getBalance() + account.getDepAmt());
-					finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
-					finalTxt.setVisible(true);
 				}
 			}
 		});
@@ -626,8 +638,6 @@ public class ATM_FX extends Application{
 				t.setRoot(ATM(t));
 			}
 		});
-		
-		
 		
 		Pane depPane = new Pane(depLbl,depTxtF,pinLbl,pinTxtF,errorMsg,enterBtn,backBtn,finalTxt);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
