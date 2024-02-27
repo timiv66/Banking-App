@@ -7,6 +7,7 @@ public class Account {
 	private double balance = 200;
 	private double withAmt;
 	private double depAmt;
+	private double latestTrac;
 	private String accountNum = generateRandomNumberString();
 	private User owner;
 	
@@ -39,6 +40,12 @@ public class Account {
 	}
 	public void setDepAmt(double depAmt) {
 		this.depAmt = depAmt;
+	}
+	public double getLatestTrac() {
+		return latestTrac;
+	}
+	public void setLatestTrac(double latestTrac) {
+		this.latestTrac = latestTrac;
 	}
 	public String getAccountNum() {
 		return accountNum;

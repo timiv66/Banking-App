@@ -318,6 +318,13 @@ public class ATM_FX extends Application{
 	        	  chkbalBtn.setEffect(null);
 	          }
 	        });
+		chkbalBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(balance(t));
+			}
+			
+		});
 		
 		
 		//Pin Button
@@ -470,6 +477,7 @@ public class ATM_FX extends Application{
 					int inputPin = Integer.parseInt(pinTxtF.getText());
 					account.setWithAmt(Double.parseDouble(withTxtF.getText()));
 					if(inputPin != user.getPin()) {
+						finalTxt.setVisible(false);
 						errorMsg.setText("Invalid PIN");
 						errorMsg.setVisible(true);
 					}	
@@ -481,6 +489,7 @@ public class ATM_FX extends Application{
 						else if(account.getWithAmt() <= account.getBalance()) {
 							errorMsg.setVisible(false);
 							account.setBalance(account.getBalance() - account.getWithAmt());
+							account.setLatestTrac(account.getWithAmt());
 							finalTxt.setText("You have withdrawn $" +  String.format("%.2f",account.getWithAmt()) + ".\nYour current balance is $" + String.format("%.2f",account.getBalance()));
 							finalTxt.setVisible(true);
 						}
@@ -537,7 +546,6 @@ public class ATM_FX extends Application{
 			return null;
 		};
 		TextFormatter<Integer> textFormatter1 = new TextFormatter<>(new IntegerStringConverter(), null, filter);
-		
 		
 		//Withdraw label and text field
 		Label depLbl = new Label("Amount to deposit:$");
@@ -599,13 +607,15 @@ public class ATM_FX extends Application{
 					int inputPin = Integer.parseInt(pinTxtF.getText());
 					account.setDepAmt(Double.parseDouble(depTxtF.getText()));
 					if(inputPin != user.getPin()) {
+						finalTxt.setVisible(false);
 						errorMsg.setText("Invalid PIN");
 						errorMsg.setVisible(true);
 					}	
 					else {
 						errorMsg.setVisible(false);
 						account.setBalance(account.getBalance() + account.getDepAmt());
-						finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + ". Your current balance is $" + String.format("%.2f",account.getBalance()));
+						account.setLatestTrac(account.getDepAmt());
+						finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + "\n Your current balance is $" + String.format("%.2f",account.getBalance()));
 						finalTxt.setVisible(true);
 					}
 				}catch(Exception e) {
@@ -644,6 +654,60 @@ public class ATM_FX extends Application{
 		Background background = new Background(background_fill);
 		depPane.setBackground(background);
 		return depPane;
+	}
+	
+	public Pane balance(Scene t) {
+		t.getWindow().setHeight(150);
+		
+		Text balTxt = new Text(account.getName() + " $"+String.format("%.2f", account.getBalance()));
+		balTxt.setX(2);
+		balTxt.setY(20);
+		balTxt.setFont(txtFont);
+		
+		//Pin label and text field
+		Text tracTxt = new Text("Latest Transaction:");
+		tracTxt.setX(2);
+		tracTxt.setY(48);
+		tracTxt.setFont(txtFont);
+		
+		if(account.getLatestTrac()== 0) {
+			tracTxt.setText("Latest Transaction: N/A");
+		}else if(account.getLatestTrac() == account.getDepAmt()) {
+			tracTxt.setText("Latest Transaction: Deposited $" + String.format("%.2f",account.getLatestTrac()));
+		}else if(account.getLatestTrac() == account.getWithAmt()) {
+			tracTxt.setText("Latest Transaction: Withdrawn $" + String.format("%.2f",account.getLatestTrac()));
+		}
+		
+		//back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(80);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(ATM(t));
+			}
+		});
+		
+		
+		Pane balPane = new Pane(balTxt,tracTxt,backBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		balPane.setBackground(background);
+		return balPane;
 	}
 
 }
