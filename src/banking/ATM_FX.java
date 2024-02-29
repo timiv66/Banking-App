@@ -1,7 +1,6 @@
 package banking;
 
 import java.util.function.UnaryOperator;
-
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -733,7 +732,7 @@ public class ATM_FX extends Application{
 		usrBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				
+				t.setRoot(changeUsr(t));
 			}
 		});
 		
@@ -845,6 +844,98 @@ public class ATM_FX extends Application{
 		Background background = new Background(background_fill);
 		setPane.setBackground(background);
 		return setPane;
+	}
+	
+	public Pane changeUsr (Scene t) {
+		//Title
+		Label titLbl = new Label("Change Username");
+		titLbl.setFont(titleFont);
+		titLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		//Current Username
+		Label currUsrLbl = new Label("Current Username:");
+		currUsrLbl.setFont(txtFont);
+		currUsrLbl.setTranslateX(3);
+		currUsrLbl.setTranslateY(39);
+		
+		TextField currUsrTxtF = new TextField();
+		currUsrTxtF.setTranslateX(162);
+		currUsrTxtF.setTranslateY(38);
+		
+		//New Username
+		Label newUsrLbl = new Label("New Username:");
+		newUsrLbl.setFont(txtFont);
+		newUsrLbl.setTranslateX(3);
+		newUsrLbl.setTranslateY(69);
+		
+		TextField newUsrTxtF = new TextField();
+		newUsrTxtF.setTranslateX(132);
+		newUsrTxtF.setTranslateY(68);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(132);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(settings(t));
+			}
+		});
+		
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(305);
+		enterBtn.setTranslateY(132);
+		
+		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  enterBtn.setEffect(shadow);
+	          }
+	        });
+		enterBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+		});
+		
+		
+		Pane chgUsrPane = new Pane(titLbl,line,currUsrLbl,currUsrTxtF,newUsrLbl,newUsrTxtF,backBtn,enterBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgUsrPane.setBackground(background);
+		return chgUsrPane;
 	}
 
 }
