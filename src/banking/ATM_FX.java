@@ -221,7 +221,7 @@ public class ATM_FX extends Application{
 	}
 	
 	public Pane ATM(Scene t) {
-		t.getWindow().setHeight(280);
+		t.getWindow().setHeight(240);
 		
 		//Welcome label
 		Label welcLbl = new Label("Welcome, " + user.getName());
@@ -326,32 +326,10 @@ public class ATM_FX extends Application{
 			
 		});
 		
-		
-		//Pin Button
-		Button pinBtn = new Button("Change PIN");
-		pinBtn.setTranslateX(205);
-		pinBtn.setTranslateY(158);
-		pinBtn.setPrefSize(140, 30);
-		pinBtn.setFont(btnFont);
-		pinBtn.setAlignment(Pos.CENTER_LEFT);
-		
-		pinBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
-	          @Override
-	          public void handle(MouseEvent e) {
-	        	  pinBtn.setEffect(shadow);
-	          }
-	        });
-		pinBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
-	          @Override
-	          public void handle(MouseEvent e) {
-	        	  pinBtn.setEffect(null);
-	          }
-	        });
-		
 		//Settings Button
 		Button setBtn = new Button("Settings");
 		setBtn.setTranslateX(205);
-		setBtn.setTranslateY(199);
+		setBtn.setTranslateY(160);
 		setBtn.setPrefSize(130, 30);
 		setBtn.setFont(btnFont);
 		setBtn.setAlignment(Pos.CENTER_LEFT);
@@ -368,11 +346,17 @@ public class ATM_FX extends Application{
 	        	  setBtn.setEffect(null);
 	          }
 	        });
+		setBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				t.setRoot(settings(t));
+			}
+		});
 		
 		//Logout Button
 		Button logoutBtn = new Button("Logout");
 		logoutBtn.setTranslateX(3);
-		logoutBtn.setTranslateY(210);
+		logoutBtn.setTranslateY(172);
 		
 		logoutBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
 	          @Override
@@ -395,7 +379,7 @@ public class ATM_FX extends Application{
 		});
 		
 		Pane atmPane = new Pane();
-		atmPane.getChildren().addAll(welcLbl,transLbl,line,withBtn,depBtn,chkbalBtn,pinBtn,setBtn,logoutBtn);
+		atmPane.getChildren().addAll(welcLbl,transLbl,line,withBtn,depBtn,chkbalBtn,setBtn,logoutBtn);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		atmPane.setBackground(background);
@@ -659,12 +643,13 @@ public class ATM_FX extends Application{
 	public Pane balance(Scene t) {
 		t.getWindow().setHeight(150);
 		
-		Text balTxt = new Text(account.getName() + " $"+String.format("%.2f", account.getBalance()));
+		//Balance Amount Txt
+		Text balTxt = new Text(account.getName() + " Balance: $"+String.format("%.2f", account.getBalance()));
 		balTxt.setX(2);
 		balTxt.setY(20);
 		balTxt.setFont(txtFont);
 		
-		//Pin label and text field
+		//Latest Transaction Txt
 		Text tracTxt = new Text("Latest Transaction:");
 		tracTxt.setX(2);
 		tracTxt.setY(48);
@@ -708,6 +693,158 @@ public class ATM_FX extends Application{
 		Background background = new Background(background_fill);
 		balPane.setBackground(background);
 		return balPane;
+	}
+	
+	public Pane settings(Scene t) {
+		t.getWindow().setHeight(200);
+		//Title
+		Label setLbl = new Label("Settings");
+		setLbl.setFont(titleFont);
+		setLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		//Change username setting
+		Button usrBtn = new Button("Username");
+		usrBtn.setTranslateX(40);
+		usrBtn.setTranslateY(35);
+		usrBtn.setPrefSize(130, 30);
+		usrBtn.setFont(btnFont);
+		
+		usrBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  usrBtn.setEffect(shadow);
+	          }
+	        });
+		usrBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  usrBtn.setEffect(null);
+	          }
+	        });
+		usrBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+			}
+		});
+		
+		//Change password setting
+		Button passBtn = new Button("Password");
+		passBtn.setTranslateX(180);
+		passBtn.setTranslateY(35);
+		passBtn.setPrefSize(130, 30);
+		passBtn.setFont(btnFont);
+		
+		passBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  passBtn.setEffect(shadow);
+	          }
+	        });
+		passBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  passBtn.setEffect(null);
+	          }
+	        });
+		passBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+			}
+		});
+		
+		//Change pin setting
+		Button pinBtn = new Button("PIN");
+		pinBtn.setTranslateX(40);
+		pinBtn.setTranslateY(75);
+		pinBtn.setPrefSize(130, 30);
+		pinBtn.setFont(btnFont);
+		
+		pinBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  pinBtn.setEffect(shadow);
+	          }
+	        });
+		pinBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  pinBtn.setEffect(null);
+	          }
+	        });
+		pinBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+			}
+		});
+		
+		//account settings
+		Button accBtn = new Button("Account");
+		accBtn.setTranslateX(180);
+		accBtn.setTranslateY(75);
+		accBtn.setPrefSize(130, 30);
+		accBtn.setFont(btnFont);
+		
+		accBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  accBtn.setEffect(shadow);
+	          }
+	        });
+		accBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  accBtn.setEffect(null);
+	          }
+	        });
+		accBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				
+			}
+		});
+		
+		//Back Button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(307);
+		backBtn.setTranslateY(132);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(ATM(t));
+			}
+		});
+		
+		Pane setPane = new Pane(setLbl,line,usrBtn,passBtn,pinBtn,accBtn,backBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		setPane.setBackground(background);
+		return setPane;
 	}
 
 }
