@@ -881,6 +881,19 @@ public class ATM_FX extends Application{
 		newUsrTxtF.setTranslateX(132);
 		newUsrTxtF.setTranslateY(68);
 		
+		//Error message
+		Text errorMsg = new Text("");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(2);
+		errorMsg.setY(113);
+		errorMsg.setVisible(false);
+		
+		Text finalTxt = new Text("");
+		finalTxt.setX(2);
+		finalTxt.setY(113);
+		finalTxt.setVisible(true);
+		finalTxt.setFont(finalFont);
+		
 		//Back button
 		Button backBtn = new Button("Back");
 		backBtn.setTranslateX(3);
@@ -906,6 +919,7 @@ public class ATM_FX extends Application{
 			}
 		});
 		
+		//Set new username
 		Button enterBtn = new Button("Enter");
 		enterBtn.setTranslateX(305);
 		enterBtn.setTranslateY(132);
@@ -925,13 +939,25 @@ public class ATM_FX extends Application{
 		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				// TODO Auto-generated method stub
-				
+				if(currUsrTxtF.getText().matches(user.getUsername()) && newUsrTxtF.getText().matches("[\\w]{6,}")) {
+					user.setUsername(newUsrTxtF.getText());
+					finalTxt.setVisible(true);
+					errorMsg.setVisible(false);
+					finalTxt.setText("New username has been set");
+				}else if(!currUsrTxtF.getText().matches(user.getUsername())) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("Incorrect current username");
+				}else if(!newUsrTxtF.getText().matches("[\\w]{6,}")) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("Username needs to be at least 6 characters");
+				}
 			}
 		});
 		
 		
-		Pane chgUsrPane = new Pane(titLbl,line,currUsrLbl,currUsrTxtF,newUsrLbl,newUsrTxtF,backBtn,enterBtn);
+		Pane chgUsrPane = new Pane(titLbl,line,currUsrLbl,currUsrTxtF,newUsrLbl,newUsrTxtF,backBtn,enterBtn,errorMsg,finalTxt);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		chgUsrPane.setBackground(background);
