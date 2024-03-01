@@ -186,7 +186,7 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				if(nameTxtF.getText().matches("[a-zA-Z\s]*") && pinTxtF.getText().matches("[0-9]{4}")
-						&& usrTxtF.getText().matches("[\\w]{6,}") && passTxtF.getText().matches("[\\w]{7,}"+"[!@#$%&*]+")) {
+						&& usrTxtF.getText().matches("[\\w]{6,}") && passTxtF.getText().matches("[\\w]{7,}"+"[!@#$%&*]{1}")) {
 					user.setName(nameTxtF.getText());
 					user.setPin(Integer.parseInt(pinTxtF.getText()));
 					user.setUsername(usrTxtF.getText());
@@ -758,7 +758,7 @@ public class ATM_FX extends Application{
 		passBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				
+				t.setRoot(changePass(t));
 			}
 		});
 		
@@ -962,6 +962,125 @@ public class ATM_FX extends Application{
 		Background background = new Background(background_fill);
 		chgUsrPane.setBackground(background);
 		return chgUsrPane;
+	}
+	
+	public Pane changePass(Scene t) {
+		
+		//Title
+		Label titLbl = new Label("Change Password");
+		titLbl.setFont(titleFont);
+		titLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		//Current Password
+		Label currPassLbl = new Label("Current Password:");
+		currPassLbl.setFont(txtFont);
+		currPassLbl.setTranslateX(3);
+		currPassLbl.setTranslateY(39);
+		
+		TextField currPassTxtF = new TextField();
+		currPassTxtF.setTranslateX(162);
+		currPassTxtF.setTranslateY(38);
+		
+		//New Password
+		Label newPassLbl = new Label("New Password:");
+		newPassLbl.setFont(txtFont);
+		newPassLbl.setTranslateX(3);
+		newPassLbl.setTranslateY(69);
+		
+		TextField newPassTxtF = new TextField();
+		newPassTxtF.setTranslateX(132);
+		newPassTxtF.setTranslateY(68);
+		
+		Text errorMsg = new Text("");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(2);
+		errorMsg.setY(113);
+		errorMsg.setVisible(false);
+		
+		Text finalTxt = new Text("");
+		finalTxt.setX(2);
+		finalTxt.setY(113);
+		finalTxt.setVisible(true);
+		finalTxt.setFont(finalFont);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(132);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(settings(t));
+			}
+		});
+		
+		//Set new password
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(305);
+		enterBtn.setTranslateY(132);
+		
+		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  enterBtn.setEffect(shadow);
+	          }
+	        });
+		enterBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(currPassTxtF.getText().matches(user.getPassword()) && newPassTxtF.getText().matches("[\\w]{7,}"+"[!@#$%&*]{1}")) {
+					user.setPassword(newPassTxtF.getText());
+					finalTxt.setVisible(true);
+					errorMsg.setVisible(false);
+					finalTxt.setText("New password has been set");
+				}else if(!currPassTxtF.getText().matches(user.getPassword())) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("Incorrect current password");
+				}else if(!newPassTxtF.getText().matches("[\\w]{7,}"+"[!@#$%&*]{1}")) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("Password needs to be at least 8 characters and contain 1 special character: !@#$%&*");
+				}
+				
+			}
+		});
+		
+		
+		Pane chgPassPane = new Pane(titLbl,line,currPassLbl,currPassTxtF,newPassLbl,newPassTxtF,errorMsg,finalTxt,backBtn,enterBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgPassPane.setBackground(background);
+		return chgPassPane;
 	}
 
 }
