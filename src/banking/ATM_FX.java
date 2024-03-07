@@ -468,6 +468,7 @@ public class ATM_FX extends Application{
 						if (account.getWithAmt() > account.getBalance()) {
 							errorMsg.setText("Insufficient Funds! Get your money up");
 							errorMsg.setVisible(true);
+							finalTxt.setVisible(false);
 						}
 						else if(account.getWithAmt() <= account.getBalance()) {
 							errorMsg.setVisible(false);
@@ -784,7 +785,7 @@ public class ATM_FX extends Application{
 		pinBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				
+				t.setRoot(changePin(t));
 			}
 		});
 		
@@ -816,7 +817,7 @@ public class ATM_FX extends Application{
 		
 		//Back Button
 		Button backBtn = new Button("Back");
-		backBtn.setTranslateX(307);
+		backBtn.setTranslateX(3);
 		backBtn.setTranslateY(132);
 		
 		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
@@ -1075,12 +1076,130 @@ public class ATM_FX extends Application{
 			}
 		});
 		
-		
 		Pane chgPassPane = new Pane(titLbl,line,currPassLbl,currPassTxtF,newPassLbl,newPassTxtF,errorMsg,finalTxt,backBtn,enterBtn);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		chgPassPane.setBackground(background);
 		return chgPassPane;
+	}
+	
+	public Pane changePin(Scene t) {
+		
+		//Title
+		Label titLbl = new Label("Change PIN");
+		titLbl.setFont(titleFont);
+		titLbl.setTranslateX(3);
+		
+		Line line = new Line();
+		line.setStartX(0); 
+		line.setEndX(400); 
+		line.setStartY(30);
+		line.setEndY(30);
+		line.setSmooth(true);
+		line.setStroke(Color.RED);
+		line.setStrokeWidth(5);
+		
+		//Current pin
+		Label currPinLbl = new Label("Current PIN:");
+		currPinLbl.setFont(txtFont);
+		currPinLbl.setTranslateX(3);
+		currPinLbl.setTranslateY(39);
+		
+		TextField currPinTxtF = new TextField();
+		currPinTxtF.setTranslateX(107);
+		currPinTxtF.setTranslateY(38);
+		currPinTxtF.setPrefWidth(50);
+		
+		//New pin
+		Label newPinLbl = new Label("New PIN:");
+		newPinLbl.setFont(txtFont);
+		newPinLbl.setTranslateX(3);
+		newPinLbl.setTranslateY(69);
+		
+		TextField newPinTxtF = new TextField();
+		newPinTxtF.setTranslateX(78);
+		newPinTxtF.setTranslateY(68);
+		newPinTxtF.setPrefWidth(50);
+		
+		Text errorMsg = new Text("");
+		errorMsg.setFont(errorFont);
+		errorMsg.setX(2);
+		errorMsg.setY(113);
+		errorMsg.setVisible(false);
+		
+		Text finalTxt = new Text("");
+		finalTxt.setX(2);
+		finalTxt.setY(113);
+		finalTxt.setVisible(true);
+		finalTxt.setFont(finalFont);
+		
+		//Back button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(132);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(settings(t));
+			}
+		});
+		
+		//Set new pin
+		Button enterBtn = new Button("Enter");
+		enterBtn.setTranslateX(305);
+		enterBtn.setTranslateY(132);
+		
+		enterBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  enterBtn.setEffect(shadow);
+	          }
+	        });
+		enterBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				if(Integer.parseInt(currPinTxtF.getText()) == user.getPin() && newPinTxtF.getText().matches("[0-9]{4}")) {
+					user.setPin(Integer.parseInt(newPinTxtF.getText()));
+					finalTxt.setVisible(true);
+					errorMsg.setVisible(false);
+					finalTxt.setText("New PIN has been set");
+				}else if(Integer.parseInt(currPinTxtF.getText()) != user.getPin()) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("Incorrect current PIN");
+				}else if(!newPinTxtF.getText().matches("[0-9]{4}")) {
+					errorMsg.setVisible(true);
+					finalTxt.setVisible(false);
+					errorMsg.setText("PIN must be a 4 digit number");
+				}
+			}
+		});
+		
+		Pane chgPinPane = new Pane(titLbl,line,currPinLbl,currPinTxtF,newPinLbl,newPinTxtF,errorMsg,finalTxt,backBtn,enterBtn);
+		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
+		Background background = new Background(background_fill);
+		chgPinPane.setBackground(background);
+		return chgPinPane;
 	}
 
 }
