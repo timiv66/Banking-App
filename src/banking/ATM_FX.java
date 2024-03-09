@@ -35,6 +35,7 @@ public class ATM_FX extends Application{
 	User user = new User(account);
 	
 	
+	
 	public static void main(String[] args) {
 		launch();
 	}
@@ -95,6 +96,7 @@ public class ATM_FX extends Application{
 				String inputPassWrd = passlogTxtF.getText();
 				
 				if (user.getUsername().matches(inputUsrName) && user.getPassword().matches(inputPassWrd)) {
+					account.setOwner(user);
 					t.setRoot(ATM(t));
 				}else {
 					errorMsg.setVisible(true);
@@ -1202,6 +1204,8 @@ public class ATM_FX extends Application{
 	}
 
 	public Pane account(Scene t) {
+		t.getWindow().setHeight(220);
+		
 		Font accFont = new Font("Book Antiqua",18);
 		
 		//Title
@@ -1255,7 +1259,51 @@ public class ATM_FX extends Application{
 			}
 		});
 		
-		Pane accountPane = new Pane(titLbl,line,accNameLbl,accNameTxt,chgAccNameBtn);
+		//Account Owner
+		Label accOwnerLbl = new Label("Account Owner: " + account.getOwner().getName());
+		accOwnerLbl.setFont(txtFont);
+		accOwnerLbl.setTranslateX(3);
+		accOwnerLbl.setTranslateY(65);
+		
+		//Account Type
+		Label accTypeLbl = new Label("Account type: " + account.getType());
+		accTypeLbl.setFont(txtFont);
+		accTypeLbl.setTranslateX(3);
+		accTypeLbl.setTranslateY(95);
+		
+		//Account Number
+		Label accNumLbl = new Label("Account Number: " + account.getAccountNum());
+		accNumLbl.setFont(txtFont);
+		accNumLbl.setTranslateX(3);
+		accNumLbl.setTranslateY(125);
+		
+		//Back Button
+		Button backBtn = new Button("Back");
+		backBtn.setTranslateX(3);
+		backBtn.setTranslateY(150);
+		
+		backBtn.addEventHandler(MouseEvent.MOUSE_ENTERED, new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(shadow);
+	          }
+	        });
+		backBtn.addEventHandler(MouseEvent.MOUSE_EXITED,new EventHandler<MouseEvent>() {
+	          @Override
+	          public void handle(MouseEvent e) {
+	        	  backBtn.setEffect(null);
+	          }
+	        });
+		backBtn.setOnAction(new EventHandler <ActionEvent>() {
+			@Override
+			public void handle(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				t.setRoot(settings(t));
+			}
+		});
+		
+		
+		Pane accountPane = new Pane(titLbl,line,accNameLbl,accNameTxt,chgAccNameBtn,accOwnerLbl,accTypeLbl,accNumLbl,backBtn);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		accountPane.setBackground(background);
@@ -1307,7 +1355,7 @@ public class ATM_FX extends Application{
 		errorMsg.setVisible(false);
 		
 		//Account Name Rules
-		Text accNameRulesTxt = new Text("Account name must be between 6 and 15 charcters. \nCannot contain any special characters");
+		Text accNameRulesTxt = new Text("Account name must be between 6 and 14 charcters. \nCannot contain any special characters");
 		accNameRulesTxt.setFont(errorFont);
 		accNameRulesTxt.setX(2);
 		accNameRulesTxt.setY(115);
@@ -1363,27 +1411,34 @@ public class ATM_FX extends Application{
 		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if(newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}") && Integer.parseInt(newPinTxtF.getText()) == user.getPin()) {
-					account.setName(newAccNameTxtF.getText());
+				try {
+					if(newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}") && Integer.parseInt(newPinTxtF.getText()) == user.getPin()) {
+						account.setName(newAccNameTxtF.getText());
+						accNameRulesTxt.setVisible(false);
+						errorMsg.setVisible(false);
+						finalTxt.setVisible(true);
+						finalTxt.setText("Account name has been set to " + account.getName());
+					}else if(!newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}") && Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
+						accNameRulesTxt.setVisible(false);
+						finalTxt.setVisible(false);
+						errorMsg.setVisible(true);
+						errorMsg.setText("Invalid account name and incorrect PIN");
+					}else if(!newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}")) {
+						accNameRulesTxt.setVisible(true);
+						finalTxt.setVisible(false);
+						errorMsg.setVisible(true);
+						errorMsg.setText("Account name follow rules. Please try again");
+					}else if(Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
+						accNameRulesTxt.setVisible(false);
+						finalTxt.setVisible(false);
+						errorMsg.setVisible(true);
+						errorMsg.setText("Incorrect PIN. Please try again.");
+					}
+				}catch(Exception e) {
 					accNameRulesTxt.setVisible(false);
-					errorMsg.setVisible(false);
-					finalTxt.setVisible(true);
-					finalTxt.setText("Account name has been set to " + account.getName());
-				}else if(!newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}")) {
-					accNameRulesTxt.setVisible(true);
 					finalTxt.setVisible(false);
 					errorMsg.setVisible(true);
-					errorMsg.setText("Account name follow rules. Please try again");
-				}else if(Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
-					accNameRulesTxt.setVisible(false);
-					finalTxt.setVisible(false);
-					errorMsg.setVisible(true);
-					errorMsg.setText("Incorrect PIN. Please try again.");
-				}else if(!newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}") && Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
-					accNameRulesTxt.setVisible(false);
-					finalTxt.setVisible(false);
-					errorMsg.setVisible(true);
-					errorMsg.setText("Invalid account name and incorrect PIN");
+					errorMsg.setText("Please fill out all text field");
 				}
 			}
 		});
