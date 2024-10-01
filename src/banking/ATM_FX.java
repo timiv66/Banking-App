@@ -84,7 +84,7 @@ public class ATM_FX extends Application{
 		errorMsg.setY(105);
 		errorMsg.setVisible(false);
 		
-		//next button
+		//Login into ATM Interface
 		Button loginBtn = new Button("Login");
 		loginBtn.setTranslateX(180);
 		loginBtn.setTranslateY(120);
@@ -92,13 +92,17 @@ public class ATM_FX extends Application{
 		loginBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				String inputUsrName = usrlogTxtF.getText();
-				String inputPassWrd = passlogTxtF.getText();
-				
-				if (user.getUsername().matches(inputUsrName) && user.getPassword().matches(inputPassWrd)) {
-					account.setOwner(user);
-					t.setRoot(ATM(t));
-				}else {
+				try {
+					String inputUsrName = usrlogTxtF.getText();
+					String inputPassWrd = passlogTxtF.getText();
+					
+					if (user.authenticateUser(inputUsrName, inputPassWrd)==true) {
+						account.setOwner(user);
+						t.setRoot(ATM(t));
+					}else {
+						errorMsg.setVisible(true);
+					}
+				}catch(NullPointerException e) {
 					errorMsg.setVisible(true);
 				}
 			}
@@ -180,6 +184,7 @@ public class ATM_FX extends Application{
 		errorMsg.setFont(errorFont);
 		errorMsg.setVisible(false);
 		
+		//Creation of new user and account
 		Button nxtBtn = new Button("Next");
 		nxtBtn.setTranslateX(305);
 		nxtBtn.setTranslateY(210);
@@ -193,6 +198,8 @@ public class ATM_FX extends Application{
 					user.setPin(Integer.parseInt(pinTxtF.getText()));
 					user.setUsername(usrTxtF.getText());
 					user.setPassword(passTxtF.getText());
+					user.setAccNum(user.generateRandomNumberString());
+					user.insertUserToDB();
 					t.setRoot(login(t));
 				}else {
 					errorMsg.setVisible(true);

@@ -59,6 +59,7 @@ public class Account {
 	public void setOwner(User owner) {
 		this.owner = owner;
 	}
+	
 	public static String generateRandomNumberString() {
        
         int length = 10;
