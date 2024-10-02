@@ -1,7 +1,16 @@
 package banking;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.Random;
 
 public class Account {
+	final String DB_URL = "jdbc:mysql://localhost:3306/bankingsystem";
+	final String DB_USER = "root";  // Use your MySQL username
+	final String DB_PASSWORD = "Tobi4timi$";  // Use your MySQL password
+	
 	private String type = "Checking";
 	private String name = "Account #1";
 	private double balance = 200;
@@ -60,6 +69,33 @@ public class Account {
 		this.owner = owner;
 	}
 	
+	//Get users account number from database
+	public String usersAccNum(String fullName, String passwrd) {
+		Connection conn = null;
+		Statement stmt = null;
+		    
+		String userAccNum = null;
+		    
+		String accNumSQL = "SELECT account_num FROM users WHERE full_name = '"+fullName+"' AND passwrd = '" + passwrd + "'";
+			
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+				
+			stmt = conn.createStatement();
+			ResultSet accNumRS = stmt.executeQuery(accNumSQL);
+			    
+			while(accNumRS.next()) {
+				userAccNum = accNumRS.getString(1);
+			}
+			    
+		}catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return userAccNum;
+	}
+		
+		
 	public static String generateRandomNumberString() {
        
         int length = 10;

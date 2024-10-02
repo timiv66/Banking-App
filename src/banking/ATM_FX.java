@@ -34,6 +34,8 @@ public class ATM_FX extends Application{
 	Account account = new Account();
 	User user = new User(account);
 	
+	public String username;
+	public String password;
 	
 	
 	public static void main(String[] args) {
@@ -97,6 +99,8 @@ public class ATM_FX extends Application{
 					String inputPassWrd = passlogTxtF.getText();
 					
 					if (user.authenticateUser(inputUsrName, inputPassWrd)==true) {
+						user.setUsername(inputUsrName);
+						user.setPassword(inputPassWrd);
 						account.setOwner(user);
 						t.setRoot(ATM(t));
 					}else {
@@ -232,7 +236,8 @@ public class ATM_FX extends Application{
 		t.getWindow().setHeight(240);
 		
 		//Welcome label
-		Label welcLbl = new Label("Welcome, " + user.getName());
+		String usersFullName = user.usersFullName(user.getUsername(), user.getPassword());
+		Label welcLbl = new Label("Welcome, " + usersFullName);
 		welcLbl.setFont(titleFont);
 		welcLbl.setTranslateX(3);
 		
@@ -1267,7 +1272,7 @@ public class ATM_FX extends Application{
 		});
 		
 		//Account Owner
-		Label accOwnerLbl = new Label("Account Owner: " + account.getOwner().getName());
+		Label accOwnerLbl = new Label("Account Owner: " + user.usersFullName(user.getUsername(), user.getPassword()));
 		accOwnerLbl.setFont(txtFont);
 		accOwnerLbl.setTranslateX(3);
 		accOwnerLbl.setTranslateY(65);
@@ -1279,7 +1284,9 @@ public class ATM_FX extends Application{
 		accTypeLbl.setTranslateY(95);
 		
 		//Account Number
-		Label accNumLbl = new Label("Account Number: " + account.getAccountNum());
+		String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+		String accNum = account.usersAccNum(fullName, user.getPassword());
+		Label accNumLbl = new Label("Account Number: " + accNum);
 		accNumLbl.setFont(txtFont);
 		accNumLbl.setTranslateX(3);
 		accNumLbl.setTranslateY(125);
@@ -1344,15 +1351,15 @@ public class ATM_FX extends Application{
 		newAccNameTxtF.setTranslateY(38);
 		
 		//Current Pin Number
-		Label newPinLbl = new Label("Enter PIN Number:");
-		newPinLbl.setFont(txtFont);
-		newPinLbl.setTranslateX(3);
-		newPinLbl.setTranslateY(69);
+		Label pinLbl = new Label("Enter PIN Number:");
+		pinLbl.setFont(txtFont);
+		pinLbl.setTranslateX(3);
+		pinLbl.setTranslateY(69);
 		
-		TextField newPinTxtF = new TextField();
-		newPinTxtF.setTranslateX(158);
-		newPinTxtF.setTranslateY(68);
-		newPinTxtF.setPrefWidth(50);
+		TextField pinTxtF = new TextField();
+		pinTxtF.setTranslateX(158);
+		pinTxtF.setTranslateY(68);
+		pinTxtF.setPrefWidth(50);
 		
 		//Error Msg
 		Text errorMsg = new Text("");
@@ -1419,13 +1426,13 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
-					if(newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}") && Integer.parseInt(newPinTxtF.getText()) == user.getPin()) {
+					if(user.authenticatePin(pinTxtF.getText())==true && newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}")) {
 						account.setName(newAccNameTxtF.getText());
 						accNameRulesTxt.setVisible(false);
 						errorMsg.setVisible(false);
 						finalTxt.setVisible(true);
 						finalTxt.setText("Account name has been set to " + account.getName());
-					}else if(!newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}") && Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
+					}else if(user.authenticatePin(pinTxtF.getText())==false && !newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}")) {
 						accNameRulesTxt.setVisible(false);
 						finalTxt.setVisible(false);
 						errorMsg.setVisible(true);
@@ -1435,7 +1442,7 @@ public class ATM_FX extends Application{
 						finalTxt.setVisible(false);
 						errorMsg.setVisible(true);
 						errorMsg.setText("Account name follow rules. Please try again");
-					}else if(Integer.parseInt(newPinTxtF.getText()) != user.getPin()) {
+					}else if(user.authenticatePin(pinTxtF.getText())==false) {
 						accNameRulesTxt.setVisible(false);
 						finalTxt.setVisible(false);
 						errorMsg.setVisible(true);
@@ -1450,7 +1457,7 @@ public class ATM_FX extends Application{
 			}
 		});
 		
-		Pane chgAccNamePane = new Pane(titLbl,line,newAccNameLbl,newAccNameTxtF,newPinLbl,newPinTxtF,backBtn,enterBtn,errorMsg,accNameRulesTxt,finalTxt);
+		Pane chgAccNamePane = new Pane(titLbl,line,newAccNameLbl,newAccNameTxtF,pinLbl,pinTxtF,backBtn,enterBtn,errorMsg,accNameRulesTxt,finalTxt);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		chgAccNamePane.setBackground(background);
