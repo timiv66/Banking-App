@@ -7,9 +7,12 @@ import java.sql.Statement;
 import java.util.Random;
 
 public class Account {
+	
+	
 	final String DB_URL = "jdbc:mysql://localhost:3306/bankingsystem";
 	final String DB_USER = "root";  // Use your MySQL username
 	final String DB_PASSWORD = "Tobi4timi$";  // Use your MySQL password
+	
 	
 	private String type = "Checking";
 	private String name = "Account #1";
@@ -93,6 +96,49 @@ public class Account {
 			e.printStackTrace();
 		}
 		return userAccNum;
+	}
+	
+	//Get users account name from database
+	public String userAccName(String accNum) {
+		Connection conn = null;
+		Statement accNameStmt = null;
+		    
+		String userAccName = null;
+		String accNameSQL = "SELECT account_name FROM accounts WHERE account_num = '" + accNum + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			accNameStmt = conn.createStatement();
+			ResultSet accNameRS = accNameStmt.executeQuery(accNameSQL);
+			
+			while(accNameRS.next()) {
+				userAccName = accNameRS.getString(1);
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} 
+		
+		return userAccName;
+	}
+	
+	//Update an account name inside database
+	public void updateUserAccName(String newAccName, String accNum) {
+		Connection conn = null;
+		Statement updateAccNameStmt = null;
+		
+		String updateAccNameSQL = "UPDATE accounts SET account_name = '" + newAccName + "' WHERE account_num = '" + accNum + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updateAccNameStmt = conn.createStatement();
+			updateAccNameStmt.execute(updateAccNameSQL);
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 		
 		

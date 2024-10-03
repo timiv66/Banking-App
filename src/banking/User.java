@@ -170,12 +170,10 @@ public class User {
 		return true;
 		
 	}
-	
-	//Checks if users pin number is correct
-	public boolean authenticatePin(String inputedPin) {
+	//Get user ID from database
+	public String userIdNum() {
 		Connection conn = null;
 	    Statement userIdStmt = null;
-	    Statement pinStmt = null;
 	   
 	    //The SQL command and the string variable that will hold query for userID from database;
 	    String userID = null;
@@ -199,11 +197,23 @@ public class User {
 			e.printStackTrace();
 		}
 	    
+	    return userID;
+	}
+	
+	//Checks if users pin number is correct
+	public boolean authenticatePin(String inputedPin) {
+		Connection conn = null;
+	    Statement pinStmt = null;
+	    String userId = userIdNum();
+	    
 	    //The SQL command and the string variable that will hold query for pin from database;
 	    String pin = null;
-	    String pinSQL = "SELECT pin FROM users WHERE pin = '" + inputedPin + "' AND user_ID = '"+ userID +"'";
+	    String pinSQL = "SELECT pin FROM users WHERE pin = '" + inputedPin + "' AND user_ID = '"+ userId +"'";
 	    
 	    try {
+	    	conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+		    
+	    	
 	    	//Executing query for pin
 	    	pinStmt = conn.createStatement();
 	    	ResultSet pinRS = pinStmt.executeQuery(pinSQL);
@@ -214,7 +224,7 @@ public class User {
 	    	}
 	    	
 	    }catch(SQLException e) {
-	    	
+	    	e.printStackTrace();
 	    }
 	    
 	    //Checking if inputed pin matches pin from database
@@ -225,6 +235,14 @@ public class User {
 	    }
 		
 		return true;
+	}
+	
+	//Update users pin number
+	public void updateUserPin(String newPin) {
+		Connection conn = null;
+		Statement updatePinStmt = null;
+		
+		String updatePinSQL = "UPDATE users SET pin = '" + newPin + "' WHERE user";
 	}
 	
 	

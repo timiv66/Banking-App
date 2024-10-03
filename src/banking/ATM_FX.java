@@ -1220,6 +1220,10 @@ public class ATM_FX extends Application{
 		
 		Font accFont = new Font("Book Antiqua",18);
 		
+		String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+		String accNum = account.usersAccNum(fullName, user.getPassword());
+		String accName = account.userAccName(accNum);
+		
 		//Title
 		Label titLbl = new Label("Account Info");
 		titLbl.setFont(titleFont);
@@ -1235,16 +1239,11 @@ public class ATM_FX extends Application{
 		line.setStrokeWidth(5);
 		
 		//Account name section
-		Label accNameLbl = new Label("Account Name:");
+		
+		Label accNameLbl = new Label("Account Name: " + accName);
 		accNameLbl.setFont(txtFont);
 		accNameLbl.setTranslateX(3);
 		accNameLbl.setTranslateY(35);
-		
-		Label accNameTxt = new Label(account.getName());
-		accNameTxt.setTranslateX(134);
-		accNameTxt.setTranslateY(34);
-		accNameTxt.setFont(txtFont);
-		accNameTxt.setFont(accFont);
 		
 		//Change account name
 		Button chgAccNameBtn = new Button("Change Name");
@@ -1284,8 +1283,6 @@ public class ATM_FX extends Application{
 		accTypeLbl.setTranslateY(95);
 		
 		//Account Number
-		String fullName = user.usersFullName(user.getUsername(), user.getPassword());
-		String accNum = account.usersAccNum(fullName, user.getPassword());
 		Label accNumLbl = new Label("Account Number: " + accNum);
 		accNumLbl.setFont(txtFont);
 		accNumLbl.setTranslateX(3);
@@ -1317,7 +1314,7 @@ public class ATM_FX extends Application{
 		});
 		
 		
-		Pane accountPane = new Pane(titLbl,line,accNameLbl,accNameTxt,chgAccNameBtn,accOwnerLbl,accTypeLbl,accNumLbl,backBtn);
+		Pane accountPane = new Pane(titLbl,line,accNameLbl,chgAccNameBtn,accOwnerLbl,accTypeLbl,accNumLbl,backBtn);
 		BackgroundFill background_fill = new BackgroundFill(Color.PINK,CornerRadii.EMPTY, Insets.EMPTY); 
 		Background background = new Background(background_fill);
 		accountPane.setBackground(background);
@@ -1426,12 +1423,17 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
+					
+					String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+					String accNum = account.usersAccNum(fullName, user.getPassword());
+					String accName = account.userAccName(accNum);
+					
 					if(user.authenticatePin(pinTxtF.getText())==true && newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}")) {
-						account.setName(newAccNameTxtF.getText());
+						account.updateUserAccName(newAccNameTxtF.getText(), accNum);
 						accNameRulesTxt.setVisible(false);
 						errorMsg.setVisible(false);
 						finalTxt.setVisible(true);
-						finalTxt.setText("Account name has been set to " + account.getName());
+						finalTxt.setText("Account name has been set to " + account.userAccName(accNum));
 					}else if(user.authenticatePin(pinTxtF.getText())==false && !newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}")) {
 						accNameRulesTxt.setVisible(false);
 						finalTxt.setVisible(false);
