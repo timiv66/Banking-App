@@ -242,7 +242,17 @@ public class User {
 		Connection conn = null;
 		Statement updatePinStmt = null;
 		
-		String updatePinSQL = "UPDATE users SET pin = '" + newPin + "' WHERE user";
+		String updatePinSQL = "UPDATE users SET pin = '" + newPin + "' WHERE user_ID = " + userIdNum();
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			updatePinStmt = conn.createStatement();
+			updatePinStmt.execute(updatePinSQL);
+			
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	

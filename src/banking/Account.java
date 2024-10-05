@@ -141,7 +141,65 @@ public class Account {
 		}
 	}
 		
+	//Get user's account balance
+	public double userAccBal(String accNum) {
+		double accBal = 0;
 		
+		Connection conn = null;
+		Statement balStmt = null;
+		
+		String balSQL = "SELECT balance FROM accounts WHERE account_num = '" + accNum + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			balStmt = conn.createStatement();
+			ResultSet balRS = balStmt.executeQuery(balSQL);
+			
+			while(balRS.next()) {
+				accBal = balRS.getDouble(1);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return accBal;
+	}
+	
+	//User is able to take money out of account
+	public void withdrawFromBal(double balance, double withdrawAmt, String accNum) {
+		Connection conn = null;
+		Statement withStmt = null;
+		
+		String withAmtSQL = "UPDATE accounts SET balance = " + (balance-withdrawAmt) + " WHERE account_num = '" + accNum + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			withStmt = conn.createStatement();
+			withStmt.execute(withAmtSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
+	//User is able to add money to account
+	public void depositToBal(double balance, double depositAmt, String accNum) {
+		Connection conn = null;
+		Statement depStmt = null;
+		
+		String depAmtSQL = "UPDATE accounts SET balance = " + (balance+depositAmt) + " WHERE account_num = '" + accNum + "'";
+		
+		try {
+			conn = DriverManager.getConnection(DB_URL, DB_USER, DB_PASSWORD);
+			depStmt = conn.createStatement();
+			depStmt.execute(depAmtSQL);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}	
+	}
+	
 	public static String generateRandomNumberString() {
        
         int length = 10;

@@ -471,24 +471,29 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
-					int inputPin = Integer.parseInt(pinTxtF.getText());
-					account.setWithAmt(Double.parseDouble(withTxtF.getText()));
-					if(inputPin != user.getPin()) {
+					Double withAmt = Double.parseDouble(withTxtF.getText());
+					//Checking to see if pin is correct
+					if(user.authenticatePin(pinTxtF.getText()) == false) {
 						finalTxt.setVisible(false);
 						errorMsg.setText("Invalid PIN");
 						errorMsg.setVisible(true);
 					}	
 					else {
-						if (account.getWithAmt() > account.getBalance()) {
+						String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+						String accNum = account.usersAccNum(fullName, user.getPassword());
+						double bal = account.userAccBal(accNum);
+						
+						//Checking if user has enough money in account
+						if (withAmt > bal) {
 							errorMsg.setText("Insufficient Funds! Get your money up");
 							errorMsg.setVisible(true);
 							finalTxt.setVisible(false);
 						}
-						else if(account.getWithAmt() <= account.getBalance()) {
+						//Sets users new balance
+						else if(withAmt <= bal) {
 							errorMsg.setVisible(false);
-							account.setBalance(account.getBalance() - account.getWithAmt());
-							account.setLatestTrac(account.getWithAmt());
-							finalTxt.setText("You have withdrawn $" +  String.format("%.2f",account.getWithAmt()) + ".\nYour current balance is $" + String.format("%.2f",account.getBalance()));
+							account.withdrawFromBal(bal,withAmt,accNum);
+							finalTxt.setText("You have withdrawn $" +  withAmt + "\nYour current balance is $" + account.userAccBal(accNum));
 							finalTxt.setVisible(true);
 						}
 					}
@@ -602,18 +607,21 @@ public class ATM_FX extends Application{
 			@Override
 			public void handle(ActionEvent arg0) {
 				try {
-					int inputPin = Integer.parseInt(pinTxtF.getText());
-					account.setDepAmt(Double.parseDouble(depTxtF.getText()));
-					if(inputPin != user.getPin()) {
+					String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+					String accNum = account.usersAccNum(fullName, user.getPassword());
+					double bal = account.userAccBal(accNum);
+					
+					
+					double depAmt = Double.parseDouble(depTxtF.getText());
+					if(user.authenticatePin(pinTxtF.getText()) == false) {
 						finalTxt.setVisible(false);
 						errorMsg.setText("Invalid PIN");
 						errorMsg.setVisible(true);
 					}	
 					else {
 						errorMsg.setVisible(false);
-						account.setBalance(account.getBalance() + account.getDepAmt());
-						account.setLatestTrac(account.getDepAmt());
-						finalTxt.setText("You have deposited $" +  String.format("%.2f",account.getDepAmt()) + "\n Your current balance is $" + String.format("%.2f",account.getBalance()));
+						account.depositToBal(bal, depAmt, accNum);
+						finalTxt.setText("You have deposited $" +  depAmt + "\n Your current balance is $" + account.userAccBal(accNum));
 						finalTxt.setVisible(true);
 					}
 				}catch(Exception e) {
@@ -657,8 +665,12 @@ public class ATM_FX extends Application{
 	public Pane balance(Scene t) {
 		t.getWindow().setHeight(150);
 		
+		String fullName = user.usersFullName(user.getUsername(), user.getPassword());
+		String accNum = account.usersAccNum(fullName, user.getPassword());
+		double bal = account.userAccBal(accNum);
+		
 		//Balance Amount Txt
-		Text balTxt = new Text(account.getName() + " Balance: $"+String.format("%.2f", account.getBalance()));
+		Text balTxt = new Text("Balance: $" + bal);
 		balTxt.setX(2);
 		balTxt.setY(20);
 		balTxt.setFont(txtFont);
@@ -1191,12 +1203,12 @@ public class ATM_FX extends Application{
 		enterBtn.setOnAction(new EventHandler <ActionEvent>() {
 			@Override
 			public void handle(ActionEvent arg0) {
-				if(Integer.parseInt(currPinTxtF.getText()) == user.getPin() && newPinTxtF.getText().matches("[0-9]{4}")) {
-					user.setPin(Integer.parseInt(newPinTxtF.getText()));
+				if(user.authenticatePin(currPinTxtF.getText()) == true && newPinTxtF.getText().matches("[0-9]{4}")) {
+					user.updateUserPin(newPinTxtF.getText());
 					finalTxt.setVisible(true);
 					errorMsg.setVisible(false);
 					finalTxt.setText("New PIN has been set");
-				}else if(Integer.parseInt(currPinTxtF.getText()) != user.getPin()) {
+				}else if(user.authenticatePin(currPinTxtF.getText()) == false) {
 					errorMsg.setVisible(true);
 					finalTxt.setVisible(false);
 					errorMsg.setText("Incorrect current PIN");
@@ -1426,9 +1438,9 @@ public class ATM_FX extends Application{
 					
 					String fullName = user.usersFullName(user.getUsername(), user.getPassword());
 					String accNum = account.usersAccNum(fullName, user.getPassword());
-					String accName = account.userAccName(accNum);
 					
-					if(user.authenticatePin(pinTxtF.getText())==true && newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,15}")) {
+					
+					if(user.authenticatePin(pinTxtF.getText())==true && newAccNameTxtF.getText().matches("[a-zA-Z0-9\s]{6,14}")) {
 						account.updateUserAccName(newAccNameTxtF.getText(), accNum);
 						accNameRulesTxt.setVisible(false);
 						errorMsg.setVisible(false);
